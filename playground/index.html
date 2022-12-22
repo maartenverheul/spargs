@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spargs test</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: brown;
+    }
+
+    .wrapper {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      position: relative;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .container input {
+      padding: 5px 20px;
+      font-size: 2em;
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      width: 100%;
+      font-family: consolas, monospace;
+    }
+
+    .container input:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <form onsubmit="onSubmit(event)">
+        <input type="text" id="commandinput" placeholder="Enter a command..">
+      </form>
+    </div>
+  </div>
+  <script src="../dist/lib.min.js"></script>
+  <script type="text/javascript">
+    const spargs = new Spargs();
+
+    
+    const inputField = document.getElementById("commandinput");
+    const historicCommands = [];
+    let commandHistoryIndex = 0;
+    
+    inputField.addEventListener("keydown", (e) => {
+      if(e.code == "ArrowUp") enterPreviousCommand();
+      else if(e.code == "ArrowDown") enterNextCommand();
+    });
+
+    function enterPreviousCommand() {
+      if(commandHistoryIndex <= 0) return false;
+      inputField.value = historicCommands[commandHistoryIndex - 1];
+      return true;
+    }
+    function enterNextCommand() {
+      if(commandHistoryIndex == commandHistoryIndex.length-1) return false;
+      inputField.value = historicCommands[commandHistoryIndex + 1];
+      return true;
+    }
+
+    function onSubmit(e) {
+      e.preventDefault()
+      const rawCommand = inputField.value;
+      historicCommands.push(rawCommand);
+      commandHistoryIndex = historicCommands.length - 1;
+      inputField.value = "";
+      console.log(rawCommand);
+    }
+  </script>
+</body>
+</html>
