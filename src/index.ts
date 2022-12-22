@@ -1,6 +1,6 @@
 type CommandOptions = {
-  onAutocomplete: (args: any[]) => string,
-  onExecute: (args: any[]) => any
+  onAutocomplete?: (args: any[]) => string,
+  onExecute?: (args: any[]) => any
 }
 
 class Command {
@@ -15,14 +15,14 @@ class Command {
     this.options = options;
   }
 
-  command(name: string, options: CommandOptions): Command {
+  command(name: string, options: CommandOptions = {}): Command {
     var command = new Command(name, options);
     if(this.commands.hasOwnProperty(name)) throw Errors.CommandExistsError(name);
     this.commands[name] = command;
     return this;
   }
 
-  argument(name: string, options: ArgumentOptions): Command {
+  argument(name: string, options: ArgumentOptions ={}): Command {
     var argument = new Argument(this, options);
     if(this.commands.hasOwnProperty(name)) throw Errors.ArgumentExistsError(name, this.name);
     this.arguments[name] = argument;
@@ -31,9 +31,9 @@ class Command {
 }
 
 type ArgumentOptions = {
-  onAutocomplete: (args: any[]) => string,
-  onExecute: (args: any[]) => any,
-  optional: boolean
+  onAutocomplete?: (args: any[]) => string,
+  onExecute?: (args: any[]) => any,
+  optional?: boolean
 }
 
 class Argument {
@@ -41,7 +41,7 @@ class Argument {
   public readonly command: Command;
   public readonly options: ArgumentOptions;
 
-  constructor(command: Command, options: ArgumentOptions) {
+  constructor(command: Command, options: ArgumentOptions = {}) {
     this.command = command;
     this.options = options;
   }
@@ -55,13 +55,13 @@ class Errors {
 
 }
 
-class Spargs {
+export default class Spargs {
 
   public commands: {[name: string]: Command} = {};
 
   /// GENERATION OPTIONS COMMANDS
   
-  command(name: string, options: CommandOptions): Spargs {
+  command(name: string, options: CommandOptions = {}): Spargs {
     var command = new Command(name, options);
     if(this.commands.hasOwnProperty(name)) throw Errors.CommandExistsError(name);
     this.commands[name] = command;
@@ -71,7 +71,7 @@ class Spargs {
   /// EXECTION COMMANDS
 
   parse(input: string): any {
-    console.log(input);
+    this.commands.test?.options?.onExecute?.([]);
   }
 
   autocomplete(input: string): string {
